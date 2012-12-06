@@ -37,6 +37,12 @@ class RegistrationForm(forms.Form):
     email = forms.EmailField(widget=forms.TextInput(attrs=dict(attrs_dict,
                                                                maxlength=75)),
                              label=_("Email address"))
+    first_name = forms.CharField(widget=forms.TextInput(attrs=dict(attrs_dict,maxlength=30,minlength=3)),
+                                label=_("First Name")
+                                )
+    last_name = forms.CharField(widget=forms.TextInput(attrs=dict(attrs_dict,maxlength=30,minlength=3)),
+                                label=_("Last Name")
+                                )
     password1 = forms.CharField(widget=forms.PasswordInput(attrs=attrs_dict, render_value=False),
                                 label=_("Password"))
     password2 = forms.CharField(widget=forms.PasswordInput(attrs=attrs_dict, render_value=False),

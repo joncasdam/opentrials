@@ -998,6 +998,7 @@ msgid "Institution type"
 msgstr "TIpo de instituição"
 
 #: repository/models.py:660 repository/trds_forms.py:709
+#: registration/forms.py:42
 msgid "First Name"
 msgstr "Primeiro nome"
 
@@ -1006,6 +1007,7 @@ msgid "Middle Name"
 msgstr "Nome do meio"
 
 #: repository/models.py:662 repository/trds_forms.py:711
+#: registration/forms.py:48
 msgid "Last Name"
 msgstr "Sobrenome"
 
