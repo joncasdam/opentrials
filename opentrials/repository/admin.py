@@ -12,7 +12,7 @@ from fossil.models import FossilIndexer
 
 from polyglot.admin import TranslationInline, TranslationAdmin
 
-tabular_inline_models = [Descriptor, TrialNumber, PublicContact, ScientificContact,
+tabular_inline_models = [Descriptor, TrialNumber, SiteContact, PublicContact, ScientificContact,
                          TrialSecondarySponsor, TrialSupportSource]
 tabular_inlines = []
 for model in tabular_inline_models:
