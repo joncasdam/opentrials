@@ -55,7 +55,8 @@ FIELDS = {
         'number_of_arms': {'required': True, 'type': 'text', 'poly': False},
         'masking': {'required': True, 'type': 'text', 'poly': False},
         'allocation': {'required': True, 'type': 'text', 'poly': False},
-        'purpose': {'required': True, 'type': 'text', 'poly': False}
+        'purpose': {'required': True, 'type': 'text', 'poly': False},
+        'observational_study_design': {'required': True, 'type': 'text', 'poly': False}, 
     },
     TRIAL_FORMS[6]: {},
     TRIAL_FORMS[7]: {}

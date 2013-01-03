@@ -359,7 +359,7 @@ class RecruitmentForm(ReviewModelForm):
     recruitment_status = MultilingualModelChoiceField(
             label=_('Study Status'),
             queryset=RecruitmentStatus.objects.all(),
-            required=False,
+            required=True,
             label_field='label',
             )
 
@@ -387,23 +387,24 @@ class RecruitmentForm(ReviewModelForm):
                                              initial=0 , required=False)
     # TRDS 14a
     inclusion_criteria = forms.CharField(label=_('Inclusion Criteria'),
-                                         required=False, max_length=8000,
+                                         required=True, max_length=8000,
                                          widget=forms.Textarea)
     # TRDS 14b
     gender = forms.ChoiceField(label=_('Gender (inclusion sex)'),
+                                required=True,
                                choices=choices.INCLUSION_GENDER)
     # TRDS 14c
-    agemin_value = forms.IntegerField(required=False, label=_('Inclusion Minimum Age'))
+    agemin_value = forms.IntegerField(required=True, label=_('Inclusion Minimum Age'))
 
     agemin_unit = forms.ChoiceField(label=_('Minimum Age Unit'),
                                    choices=choices.INCLUSION_AGE_UNIT)
     # TRDS 14d
-    agemax_value = forms.IntegerField(required=False, label=_('Inclusion Maximum Age'))
+    agemax_value = forms.IntegerField(required=True, label=_('Inclusion Maximum Age'))
 
     agemax_unit = forms.ChoiceField(label=_('Maximum Age Unit'),
                                    choices=choices.INCLUSION_AGE_UNIT)
     # TRDS 14e
-    exclusion_criteria = forms.CharField(label=_('Exclusion Criteria'),required=False,
+    exclusion_criteria = forms.CharField(label=_('Exclusion Criteria'),required=True,
                                         max_length=8000, widget=forms.Textarea,)
 
     def clean_enrollment_end_date(self):
@@ -510,35 +511,42 @@ class StudyTypeForm(ReviewModelForm):
 
     title = _('Study Type')
 
+    number_of_arms = forms.IntegerField(
+        label=_('Number of arms'),
+        required=True
+        )
+
     # TRDS 15b
-    study_design = forms.CharField(label=_('Study Design'),
-                                         required=False, max_length=1000,
-                                         widget=forms.Textarea)
+    study_design = forms.CharField(
+        label=_('Study Design'),
+        required=True, max_length=1000,
+        widget=forms.Textarea
+        )
 
     purpose = MultilingualModelChoiceField(
         label=_('Study Purpose'),
         queryset=StudyPurpose.objects.all(),
-        required=False,
+        required=True,
         label_field='label',
         )
 
     intervention_assignment = MultilingualModelChoiceField(
         label=_('Intervention Assignment'),
         queryset=InterventionAssigment.objects.all(),
-        required=False,
+        required=True,
         label_field='label',
         )
 
     masking = MultilingualModelChoiceField(
         label=_('Masking type'),
         queryset=StudyMasking.objects.all(),
-        required=False,
+        required=True,
         label_field='label',
         )
 
     is_observational = forms.ChoiceField(
         label=_('Study Type'),
-        required=True,
+        required=False,
         choices=[
             (False,_('Intervention')),
             (True,_('Observational')),
@@ -547,7 +555,7 @@ class StudyTypeForm(ReviewModelForm):
     allocation = MultilingualModelChoiceField(
         label=_('Allocation type'),
         queryset=StudyAllocation.objects.all(),
-        required=False,
+        required=True,
         label_field='label',
         )
 
@@ -555,14 +563,14 @@ class StudyTypeForm(ReviewModelForm):
     phase = MultilingualModelChoiceField(
         label=_('Study Phase'),
         queryset=StudyPhase.objects.all(),
-        required=False,
+        required=True,
         label_field='label',
         )
 
     time_perspective = MultilingualModelChoiceField(
         label=_('Time Perspective'),
         queryset=TimePerspective.objects.all(),
-        required=True,
+        required=False,
         label_field='label',
         )
 
