@@ -31,16 +31,19 @@ class RegistrationForm(forms.Form):
     """
     username = forms.RegexField(regex=r'^[\w.@+-]+$',
                                 max_length=30,
+                                min_length=3,
                                 widget=forms.TextInput(attrs=attrs_dict),
                                 label=_("Username"),
                                 error_messages={'invalid': _("This value must contain only letters, numbers and @/./+/-/_.")})
     email = forms.EmailField(widget=forms.TextInput(attrs=dict(attrs_dict,
                                                                maxlength=75)),
                              label=_("Email address"))
-    first_name = forms.CharField(widget=forms.TextInput(attrs=dict(attrs_dict,maxlength=30,minlength=3)),
+    first_name = forms.CharField(min_length=3,
+                                widget=forms.TextInput(attrs=attrs_dict),
                                 label=_("First Name")
                                 )
-    last_name = forms.CharField(widget=forms.TextInput(attrs=dict(attrs_dict,maxlength=30,minlength=3)),
+    last_name = forms.CharField(min_length=2,
+                                widget=forms.TextInput(attrs=attrs_dict),
                                 label=_("Last Name")
                                 )
     password1 = forms.CharField(widget=forms.PasswordInput(attrs=attrs_dict, render_value=False),
