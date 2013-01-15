@@ -390,7 +390,7 @@ class RecruitmentForm(ReviewModelForm):
         widget=SelectDateWidget(years=[y for y in range(2010, year+50)]),
         )
     enrollment_end_date = forms.DateField(
-        required=False,
+        required=True,
         label=_('Date of Last Enrollment'),
         widget=SelectDateWidget(years=[y for y in range(2010, year+50)]),
         )

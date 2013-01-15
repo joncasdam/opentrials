@@ -36,6 +36,7 @@ FIELDS = {
         'recruitment_status': {'required': True, 'type': 'text', 'poly': False}, 
         'recruitment_country': {'required': True, 'type': 'mult', 'poly': False, 'queryset': None},
         'enrollment_start_date': {'required': True, 'type': 'datetime', 'poly': False},
+        'enrollment_end_date': {'required': True, 'type': 'datetime', 'poly': False},
         #'enrollment_end_planned': {'required': True, 'type': 'text', 'poly': False},  
         'target_sample_size': {'required': True, 'type': 'text', 'poly': False}, 
         'inclusion_criteria': {'required': True, 'type': 'text', 'poly': True},
