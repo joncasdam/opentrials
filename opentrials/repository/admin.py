@@ -28,9 +28,9 @@ class ClinicalTrialTranslationInline(TranslationInline):
 
 class ClinicalTrialAdmin(admin.ModelAdmin):
     inlines = tabular_inlines + [OutcomeInline, ClinicalTrialTranslationInline]
-    list_display = ('updated_str','identifier','short_title','recruitment_status',)
+    list_display = ('updated_str','identifier','utrn_number','short_title','recruitment_status',)
     list_display_links = ('identifier','short_title',)
-    search_fields = ('scientific_title', 'public_title', 'i_freetext', 'id', 'trial_id')
+    search_fields = ('scientific_title', 'public_title', 'i_freetext', 'id', 'trial_id', 'utrn_number')
     list_filter = ('updated', 'study_type', 'phase', 'recruitment_status', 'status',)
     date_hierarchy = 'updated'
     save_on_top = True
