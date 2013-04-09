@@ -207,9 +207,22 @@ class ContactAdmin(admin.ModelAdmin):
     search_fields= ('firstname', 'middlename', 'lastname', 'affiliation__name', 'email')
     list_filter = ('city', 'country')
     
+
+from django.contrib.admin.views.main import ChangeList
+
+class SpecialOrderingChangeList(ChangeList):
+    def get_query_set(self):
+        queryset = super(SpecialOrderingChangeList, self).get_query_set()
+        return queryset.order_by(*self.model_meta.ordering)
+
 class InstitutionAdmin(admin.ModelAdmin):
-    list_filter = ('state', 'country', 'i_type')
+    list_filter = ('i_type', 'state', 'country')
     search_fields = ('name', )
+
+    def get_query_set(self): 
+         queryset = super(SpecialOrderingChangeList, self).get_query_set() 
+         return queryset.order_by(*self.model._meta.ordering) 
+
 
 if ClinicalTrial not in admin.site._registry:
     admin.site.register(ClinicalTrial, ClinicalTrialAdmin)
