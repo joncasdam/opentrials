@@ -44,6 +44,8 @@ from fossil.models import Fossil
 
 from vocabulary.models import MailMessage
 
+from repository.logger import log_actions
+
 def send_opentrials_email(subject, message, recipient):
 
     if settings.DEBUG: # avoid sending emails when debug is on
@@ -331,6 +333,8 @@ def new_submission(request):
 
             # sets the initial status of the fields
             su.init_fields_status()
+
+            log_actions(request.user,'Created a submission')
 
             return HttpResponseRedirect(reverse('repository.edittrial',args=[trial.id]))
     else:
