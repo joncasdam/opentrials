@@ -526,6 +526,9 @@ def contact(request):
                 c = Context({
                             'name': name,
                             'message': message,
+                            'logged': request.user.is_authenticated(),
+                            'login': request.user,
+                            'email': request.user.email,
                             'site_domain': Site.objects.get_current().domain,
                             'site_name': Site.objects.get_current().name, })
                 send_mail(subject, t.render(c), from_email, recipient_list,
