@@ -80,7 +80,7 @@
     <small>
         / <a href="{% url repository.edittrial object.pk %}">{% trans "Summary" %}</a>
     </small>
-    <big>/ Trial {{ object }}</big>
+    <big>/ Trial: {{ req }} {{ public_title }}</big>
 {% endblock %}
 
 {% block body %}
@@ -150,7 +150,7 @@
     </div>
     {% endif %}
 
-    <h2>{{ object.scientific_title }}</h2>
+    <h2>{{ scientific_title }}</h2>
 
 
     <h3>{% trans 'Study Type' %}:</h3>
