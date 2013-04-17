@@ -26,7 +26,7 @@ urlpatterns = patterns('',
     #public
     url(r'^recruiting/$', recruiting, name='repository.recruiting'),
     url(r'^advanced_search/$', advanced_search, name='repository.advanced_search'),
-    url(r'^(?P<trial_fossil_id>[0-9A-Za-z-]+)/$', trial_registered, name='repository.trial_registered'),
+
     url(r'^(?P<trial_fossil_id>[0-9A-Za-z-]+)/xml/ictrp/$', trial_ictrp, name='repository.trial_ictrp'),
     url(r'^(?P<trial_fossil_id>[0-9A-Za-z-]+)/xml/ot/$', trial_otxml, name='repository.trial_otxml'),
     url(r'^(?P<trial_fossil_id>[0-9A-Za-z-]+)/v(?P<trial_version>\d+)/$', trial_registered, name='repository.trial_registered_version'),
@@ -35,5 +35,6 @@ urlpatterns = patterns('',
     url(r'^all/xml/ictrp$', all_trials_ictrp),
     url(r'^multi/xml/ot', multi_otxml, name='repository.multi_otxml'),
     url(r'^multi/csv/ot', custom_otcsv, name='repository.custom_otcsv'),
+    url(r'^(?P<trial_fossil_id>[0-9A-Za-z-]+)/([\w|\W]+)?$', trial_registered, name='repository.trial_registered'),
     url(r'^$', index, name='repository.index'),
 )

@@ -18,7 +18,7 @@
             <type_enrolment>{% if trial.ct_fossil.enrollment_start_actual %}actual{% else %}anticipated{% endif %}</type_enrolment>
             <target_size>{{ trial.ct_fossil.target_sample_size }}</target_size>
             <recruitment_status>{{ trial.ct_fossil.recruitment_status.label }}</recruitment_status>
-            <url>{% url repository.trial_registered_version trial_fossil_id=trial.ct_fossil.trial_id, trial_version=trial.version %}</url>
+            <url>{% url repository.trial_registered trial_fossil_id=trial.ct_fossil.trial_id %}</url>
             <study_type>{{ trial.ct_fossil.study_type.label }}</study_type>
             <study_design>{{ trial.ct_fossil.study_design }}</study_design>
             <phase>{{ trial.ct_fossil.phase.label }}</phase>
