@@ -11,3 +11,4 @@ django-rosetta
 django-reversion
 django-plus
 pysolr
+xlwt
