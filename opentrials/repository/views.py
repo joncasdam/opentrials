@@ -66,6 +66,8 @@ import csv
 import cStringIO
 from zipfile import ZipFile, ZIP_DEFLATED
 
+from logger import log_actions
+
 EXTRA_FORMS = 1
 
 MENU_SHORT_TITLE = [_('Trial Identif.'),
@@ -1365,11 +1367,9 @@ def all_trials_ictrp(request):
             )
 
     resp['Content-Disposition'] = 'attachment; filename=%s-ictrp.xml' % settings.TRIAL_ID_PREFIX
-
-    from logger import log_actions
     
     log_actions(request.user,'Exported ICTRP XML file')
-    
+
     return resp
 
 def trial_otxml(request, trial_id, trial_version=None):
@@ -1448,18 +1448,41 @@ def custom_otcsv(request):
     allsubmissions = Submission.objects.all()
     allsubmissions_list = allsubmissions.values('pk','trial_id','created','updated','creator','title','status')
 
-    today = datetime.datetime.now().strftime('%Y-%m-%dT%H:%M')
+    today = datetime.datetime.now().strftime('%Y-%m-%dT%H_%M')
 
     filename = "CustomCSV_OT_%s" % today
 
     output = cStringIO.StringIO() ## temp output csv file
-    writer = csv.writer(output)
 
-    writer.writerow(['trial','created','updated','status','creator','title'])
+    import xlwt
+
+    wbk = xlwt.Workbook()
+    sheet = wbk.add_sheet('Ensaios')
+    sheet_style = xlwt.XFStyle()
+    sheet_style.num_format_str = 'YYYY-MM-DD HH:MM:SS'
+
+    sheet.col(0).width = 3000
+    sheet.col(1).width = 5500
+    sheet.col(2).width = 5500
+    sheet.col(3).width = 3000
+    sheet.col(4).width = 4500
+    sheet.col(5).width = 20000
+
+    def escrevexls (sheet_par, linha_par, value_list):
+        col_num = 0 
+        for value in value_list:
+            sheet_par.write(linha_par,col_num,value, sheet_style)
+            col_num += 1
+
+    linha = 0
+
+    escrevexls(sheet, linha, ['REQ','Criacao','Atualizado','Status','Usuario','Titulo'])
 
     for submission in allsubmissions_list:
-        title = smart_str(submission['title'])
-        login_creator = User.objects.get(pk=submission['creator'])
+        linha += 1
+
+        title = submission['title']
+        login_creator = str(User.objects.get(pk=submission['creator']))
 
         try:
             trial_id = ClinicalTrial.objects.get(pk=submission['trial_id'])
@@ -1467,14 +1490,18 @@ def custom_otcsv(request):
         except:
             trial_id = "no_id"
 
-        writer.writerow([trial_id,submission['created'],submission['updated'],submission['status'],login_creator,title])
+        insert_values = [trial_id,submission['created'],submission['updated'],submission['status'],login_creator,title]
+
+        escrevexls(sheet,linha,insert_values)
+
+    wbk.save(output)
 
     response = HttpResponse(mimetype='application/zip')
     response['Content-Disposition'] = 'attachment; filename=%s.zip' % filename
 
     zipped_file = ZipFile(response, 'w', ZIP_DEFLATED)
 
-    csv_name = '%s.csv' % filename
+    csv_name = '%s.xls' % filename
     zipped_file.writestr(csv_name, output.getvalue())
 
     return response
