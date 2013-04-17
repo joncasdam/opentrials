@@ -104,13 +104,9 @@ class Submission(ControlledDeletion):
         return self.short_title()
 
     def get_mandatory_languages(self):
-        langs = set([u'en'])
-        if self.trial.primary_sponsor is not None:
-            langs.add(self.trial.primary_sponsor.country.submission_language)
-
-        for rc in self.trial.recruitment_country.all():
-            langs.add(rc.submission_language)
-
+        langs = set([u'pt-br',u'en'])
+        langs.add(self.language)
+        
         return langs.intersection(set(MANAGED_LANGUAGES_LOWER))
 
     def get_trans_languages(self):
