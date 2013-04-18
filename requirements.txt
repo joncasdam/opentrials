@@ -5,7 +5,7 @@ mysql-python
 south
 lxml
 Markdown
-django_compressor
+django_compressor==1.2
 django-nose
 django-rosetta
 django-reversion
