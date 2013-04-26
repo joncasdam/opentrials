@@ -18,7 +18,7 @@
             <target_size>{{ object.target_sample_size }}</target_size>
             <recruitment_status>{{ object.recruitment_status.label }}</recruitment_status>
             <url>{% url repository.trial_registered_version trial_fossil_id=object.trial_id, trial_version=object.version %}</url>
-            <study_type>{{ object.study_type.label }}</study_type>
+            <study_type>{% if object.is_observational %}Observational{% else %}Intervention{% endif %}</study_type>
             <study_design>{{ object.study_design }}</study_design>
             <phase>{{ object.phase.label }}</phase>
             <hc_freetext>{{ object.hc_freetext }}</hc_freetext>

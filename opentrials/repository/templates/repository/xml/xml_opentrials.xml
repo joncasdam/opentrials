@@ -116,7 +116,7 @@
         <study expanded_access_program="{{ object.expanded_access_program }}"
                number_of_arms="{{ object.number_of_arms }}">
             <study_design>{{ object.study_design }}</study_design>
-            {% if object.study_type %}<type value="{{ object.study_type.label|prep_label_for_xml }}"></type>{% endif %}
+            <type value="{% if object.is_observational %}Observational{% else %}Intervention{% endif %}"></type>
             <phase value="{{ object.phase.label|prep_label_for_xml }}"></phase>
             <purpose value="{{ object.purpose.label|prep_label_for_xml }}"></purpose>
             <intervention_assignment value="{{ object.intervention_assignment.label|prep_label_for_xml }}"></intervention_assignment>
