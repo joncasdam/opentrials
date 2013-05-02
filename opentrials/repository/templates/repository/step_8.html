@@ -33,25 +33,29 @@
             $("#id_new_contact-0-country option").first().after($("#id_new_contact-0-country option[value=1]"));
         });
 
-        // customization when display language is pt_br
-        // format fields: CEP (zipcode) and Telefone (phone)
-        if (display_language = 'pt_br'){
-            function format_field(mask, element){
-              var i = element.value.length;
-              var saida = mask.substring(0,1);
-              var texto = mask.substring(i)
+        
+        // if Brazil is the selected country,
+        // format field: CEP (zipcode)
 
-              if (texto.substring(0,1) != saida){
+        function format_field(mask, element){
+            var i = element.value.length;
+            var saida = mask.substring(0,1);
+            var texto = mask.substring(i)
+
+            if (texto.substring(0,1) != saida){
                 element.value += texto.substring(0,1);
-              }
             }
+        }
 
-            $("#id_new_contact-0-telephone").keypress(function() {
-                format_field('##-####-####',this)
-            });
-            $("#id_new_contact-0-zip").keypress(function() {
-                format_field('#####-###',this)
-            });
+        document.getElementById("id_new_contact-0-country").onchange = function () {
+            if (this.value === '1'){
+                $("#id_new_contact-0-zip").attr('maxLength','9').keypress(function() {
+                    // user can only add numbers and hyphen in ZipCode
+                    this.value = this.value.replace(/[^0-9\-]/g,'');
+                    // format field for Brazilian zip code
+                    format_field('#####-###',this)
+                });
+            }
         }
 
     </script>
