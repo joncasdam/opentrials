@@ -17,11 +17,11 @@
         });
 
         function new_institution(target){
-            return window.open('{% url new_institution %}#'+target,'n_i','status=0,location=0');
+            return window.open('{% url new_institution %}#'+target,'n_i','status=0,location=0,height=550');
         }
 
         function delete_contact(target){
-            return window.open('{% url contacts %}#'+target,'n_i','status=0,location=0,height=380');
+            return window.open('{% url contacts %}#'+target,'n_i','status=0,location=0,height=550');
         }
 
 

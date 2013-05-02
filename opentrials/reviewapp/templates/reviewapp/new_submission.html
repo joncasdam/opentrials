@@ -29,7 +29,7 @@
 {% block endjs %}{{ block.super }}
     <script type="text/javascript">
         function new_institution(target){
-            return window.open('{% url new_institution %}#'+target,'n_i','status=0,location=0,height=380');
+            return window.open('{% url new_institution %}#'+target,'n_i','status=0,location=0,height=550');
         }
 
         $(document).ready(function() {
