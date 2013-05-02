@@ -424,12 +424,12 @@
                     <th><span class="label">{% trans 'Study Phase' %}</span></th>
                 </tr>
                 <tr>
-                    <td><span class="value">{{ object.expanded_access_program }}</span></td>
-                    <td><span class="value">{{ object.purpose.label }}</span></td>
-                    <td><span class="value">{{ object.intervention_assignment.label }}</span></td>
+                    <td><span class="value">{% if 'pt-br' not in ct_l %} {% trans expanded_access_program %} {% else %} {{ object.expanded_access_program }} {% endif %}</span></td>
+                    <td><span class="value">{% if 'pt-br' not in ct_l %} {% trans purpose %} {% else %} {{ object.purpose.label }} {% endif %}</span></td>
+                    <td><span class="value">{% if 'pt-br' not in ct_l %} {% trans intervention_assigment %} {% else %} {{ object.intervention_assignment.label }} {% endif %}</span></td>
                     <td><span class="value">{{ object.number_of_arms }}</span></td>
-                    <td><span class="value">{{ object.masking.label }}</span></td>
-                    <td><span class="value">{{ object.allocation.label }}</span></td>
+                    <td><span class="value">{% if 'pt-br' not in ct_l %} {% trans masking_type %} {% else %} {{ object.masking.label }} {% endif %}</span></td>
+                    <td><span class="value">{% if 'pt-br' not in ct_l %} {% trans allocation_type %} {% else %} {{ object.allocation.label }} {% endif %}</span></td>
                     <td><span class="value">{{ object.phase.label }}</span></td>
                 </tr>
             </table>
