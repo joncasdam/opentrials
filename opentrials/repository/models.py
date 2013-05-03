@@ -670,6 +670,7 @@ class Contact(TrialRegistrationDataSetModel):
                                     verbose_name=_('Institution'))
     address = models.CharField(_('Address'), max_length=255, blank=True)
     city = models.CharField(_('City'), max_length=255, blank=True)
+    state = models.CharField(_('State'), max_length=255, blank=True, default='', choices=settings.LOCAL_STATE_CHOICES)
     country = models.ForeignKey(CountryCode, null=True, blank=True,
                                 verbose_name=_('Country'),)
     zip = models.CharField(_('Postal Code'), max_length=50, blank=True)
