@@ -139,6 +139,9 @@ class TrialsFossilManager(FossilManager):
                 content_type=self._ctype,
                 )
 
+    def all(self):   
+        return self.indexed(display='True')
+
     def recruiting(self):
         return self.indexed(recruitment_status='recruiting', display='True').filter(is_most_recent=True)
 
@@ -646,6 +649,8 @@ class Institution(TrialRegistrationDataSetModel):
     creator = models.ForeignKey(User, related_name='institution_creator', editable=False)
     i_type = models.ForeignKey(InstitutionType, null=True, blank=True,
                                            verbose_name=_('Institution type'))
+    class Meta:
+        ordering = ['name',]
 
     def __unicode__(self):
         return safe_truncate(self.name, 120)
@@ -675,6 +680,9 @@ class Contact(TrialRegistrationDataSetModel):
     def name(self):
         names = self.firstname + u' ' + self.middlename + u' ' + self.lastname
         return u' '.join(names.split())
+
+    class Meta:
+        ordering = ['firstname', 'middlename', 'lastname']
 
     def __unicode__(self):
         return self.name()
