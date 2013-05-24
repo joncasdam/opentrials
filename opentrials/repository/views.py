@@ -207,7 +207,7 @@ def edit_trial_index(request, trial_pk):
             data['url'] = reverse('step_' + str(i + 1), args=[trial_pk])
 
             trans_list = []
-            for lang in ct.submission.get_mandatory_languages():
+            for lang in fields_status:
                 trans = {}
                 lang = lang.lower()
                 step_status = fields_status.get(lang, {}).get(name, None)
@@ -618,11 +618,20 @@ def trial_view(request, trial_pk):
         ct.enrollment_end_actual is not None else ct.enrollment_end_planned
     
     if ct.language != 'pt-br':
-        allocation_type = ct.allocation.label
-        masking_type = ct.masking.label
-        intervention_assigment = ct.intervention_assignment.label
-        purpose = ct.purpose.label
-        expanded_access_program = str(ct.expanded_access_program)
+        try:
+            allocation_type = ct.allocation.label
+            masking_type = ct.masking.label
+            intervention_assigment = ct.intervention_assignment.label
+            purpose = ct.purpose.label
+            expanded_access_program = str(ct.expanded_access_program)
+        except:
+            allocation_type = ''
+            masking_type = ''
+            intervention_assigment = ''
+            purpose = ''
+            expanded_access_program = ''
+
+
     else:
         allocation_type = ''
         masking_type = ''
@@ -856,7 +865,7 @@ def step_1(request, trial_pk):
                                'steps': step_list(trial_pk),
                                'remarks':Remark.status_open.filter(submission=ct.submission,context=slugify(TRIAL_FORMS[0])),
                                'default_second_language': ct.submission.get_secondary_language(),
-                               'available_languages': [lang.lower() for lang in ct.submission.get_mandatory_languages()],
+                               'available_languages': [lang.lower() for lang in ct.submission.get_fields_status()],
                                },
                                context_instance=RequestContext(request))
 
@@ -910,7 +919,7 @@ def step_2(request, trial_pk):
                                'steps': step_list(trial_pk),
                                'remarks':Remark.status_open.filter(submission=ct.submission,context=slugify(TRIAL_FORMS[1])),
                                'default_second_language': ct.submission.get_secondary_language(),
-                               'available_languages': [lang.lower() for lang in ct.submission.get_mandatory_languages()],},
+                               'available_languages': [lang.lower() for lang in ct.submission.get_fields_status()],},
                                context_instance=RequestContext(request))
 
 
@@ -931,7 +940,7 @@ def step_3(request, trial_pk):
                                                 extra=EXTRA_FORMS,
                                                 extra_formset_attrs={
                                                     'default_second_language':ct.submission.get_secondary_language(),
-                                                    'available_languages':[lang.lower() for lang in ct.submission.get_mandatory_languages()],
+                                                    'available_languages':[lang.lower() for lang in ct.submission.get_fields_status()],
                                                     'display_language':request.user.get_profile().preferred_language,
                                                     },
                                                 )
@@ -943,7 +952,7 @@ def step_3(request, trial_pk):
                                                 extra=EXTRA_FORMS,
                                                 extra_formset_attrs={
                                                     'default_second_language':ct.submission.get_secondary_language(),
-                                                    'available_languages':[lang.lower() for lang in ct.submission.get_mandatory_languages()],
+                                                    'available_languages':[lang.lower() for lang in ct.submission.get_fields_status()],
                                                     'display_language':request.user.get_profile().preferred_language,
                                                     },
                                                 )
@@ -992,7 +1001,7 @@ def step_3(request, trial_pk):
                                'steps': step_list(trial_pk),
                                'remarks':Remark.status_open.filter(submission=ct.submission,context=slugify(TRIAL_FORMS[2])),
                                'default_second_language': ct.submission.get_secondary_language(),
-                               'available_languages': [lang.lower() for lang in ct.submission.get_mandatory_languages()],},
+                               'available_languages': [lang.lower() for lang in ct.submission.get_fields_status()],},
                                context_instance=RequestContext(request))
 
 
@@ -1013,7 +1022,7 @@ def step_4(request, trial_pk):
                                           extra=EXTRA_FORMS,
                                           extra_formset_attrs={
                                             'default_second_language':ct.submission.get_secondary_language(),
-                                            'available_languages':[lang.lower() for lang in ct.submission.get_mandatory_languages()],
+                                            'available_languages':[lang.lower() for lang in ct.submission.get_fields_status()],
                                             'display_language':request.user.get_profile().preferred_language,
                                             },
                                           )
@@ -1051,7 +1060,7 @@ def step_4(request, trial_pk):
                                'steps': step_list(trial_pk),
                                'remarks':Remark.status_open.filter(submission=ct.submission,context=slugify(TRIAL_FORMS[3])),
                                'default_second_language': ct.submission.get_secondary_language(),
-                               'available_languages': [lang.lower() for lang in ct.submission.get_mandatory_languages()],},
+                               'available_languages': [lang.lower() for lang in ct.submission.get_fields_status()],},
                                context_instance=RequestContext(request))
 
 
@@ -1088,7 +1097,7 @@ def step_5(request, trial_pk):
                                'steps': step_list(trial_pk),
                                'remarks':Remark.status_open.filter(submission=ct.submission,context=slugify(TRIAL_FORMS[4])),
                                'default_second_language': ct.submission.get_secondary_language(),
-                               'available_languages': [lang.lower() for lang in ct.submission.get_mandatory_languages()],
+                               'available_languages': [lang.lower() for lang in ct.submission.get_fields_status()],
                                },
                                context_instance=RequestContext(request))
 
@@ -1123,7 +1132,7 @@ def step_6(request, trial_pk):
                                'steps': step_list(trial_pk),
                                'remarks':Remark.status_open.filter(submission=ct.submission,context=slugify(TRIAL_FORMS[5])),
                                'default_second_language': ct.submission.get_secondary_language(),
-                               'available_languages': [lang.lower() for lang in ct.submission.get_mandatory_languages()],},
+                               'available_languages': [lang.lower() for lang in ct.submission.get_fields_status()],},
                                context_instance=RequestContext(request))
 
 
@@ -1143,7 +1152,7 @@ def step_7(request, trial_pk):
                                 can_delete=True,
                                 extra_formset_attrs={
                                     'default_second_language':ct.submission.get_secondary_language(),
-                                    'available_languages':[lang.lower() for lang in ct.submission.get_mandatory_languages()],
+                                    'available_languages':[lang.lower() for lang in ct.submission.get_fields_status()],
                                     'display_language':request.trials_language
                                     },
                                 )
@@ -1153,7 +1162,7 @@ def step_7(request, trial_pk):
                                 can_delete=True,
                                 extra_formset_attrs={
                                     'default_second_language':ct.submission.get_secondary_language(),
-                                    'available_languages':[lang.lower() for lang in ct.submission.get_mandatory_languages()],
+                                    'available_languages':[lang.lower() for lang in ct.submission.get_fields_status()],
                                     'display_language':request.user.get_profile().preferred_language,
                                     },
                                 )
@@ -1191,7 +1200,7 @@ def step_7(request, trial_pk):
                                'steps': step_list(trial_pk),
                                'remarks':Remark.status_open.filter(submission=ct.submission,context=slugify(TRIAL_FORMS[6])),
                                'default_second_language': ct.submission.get_secondary_language(),
-                               'available_languages': [lang.lower() for lang in ct.submission.get_mandatory_languages()],},
+                               'available_languages': [lang.lower() for lang in ct.submission.get_fields_status()],},
                                context_instance=RequestContext(request))
 
 
@@ -1257,7 +1266,7 @@ def step_8(request, trial_pk):
                                'steps': step_list(trial_pk),
                                'remarks':Remark.status_open.filter(submission=ct.submission,context=slugify(TRIAL_FORMS[7])),
                                'default_second_language': ct.submission.get_secondary_language(),
-                               'available_languages': [lang.lower() for lang in ct.submission.get_mandatory_languages()],},
+                               'available_languages': [lang.lower() for lang in ct.submission.get_fields_status()],},
                                context_instance=RequestContext(request))
 
 @login_required
@@ -1317,7 +1326,7 @@ def step_9(request, trial_pk):
                                'steps': step_list(trial_pk),
                                'remarks':Remark.status_open.filter(submission=ct.submission,context=slugify(TRIAL_FORMS[8])),
                                'default_second_language': ct.submission.get_secondary_language(),
-                               'available_languages': [lang.lower() for lang in ct.submission.get_mandatory_languages()],},
+                               'available_languages': [lang.lower() for lang in ct.submission.get_fields_status()],},
                                context_instance=RequestContext(request))
 
 from repository.xml.generate import xml_ictrp, xml_opentrials
