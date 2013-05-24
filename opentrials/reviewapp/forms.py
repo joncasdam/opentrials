@@ -65,7 +65,9 @@ class InitialTrialForm(ReviewModelForm):
                                  choices=settings.MANAGED_LANGUAGES_CHOICES)
 
     def clean_utrn_number(self):
-        data = utrn_number_validate(self.cleaned_data['utrn_number'].strip())
+       # data = utrn_number_validate(self.cleaned_data['utrn_number'].strip())
+        #comentado para nao validar utn no ambiente de testes
+        data = self.cleaned_data['utrn_number'].strip()
         if ClinicalTrial.objects.filter(utrn_number=data).count() > 0:
             raise forms.ValidationError(_('UTN number already exists.'))
         return data

@@ -113,7 +113,7 @@
                     <div class="search">
                     <form action="{% url repository.index %}" method="get">
                         <input type="text" name="q" class="textEntry" id="search" onblur="this.className = 'textEntry';" onfocus="this.className = 'textEntry textEntryFocus';" value=""/>
-                        <input type="submit" class="submit" value="{% trans 'Search trials' %}" />
+                        <input type="submit" class="submit" value="{% trans 'Search trials teste' %}" />
                         <a href="{% url repository.advanced_search %}?{{ request.GET.urlencode }}">{% trans 'Advanced Search' %}</a>
                     </form>
                 </div>

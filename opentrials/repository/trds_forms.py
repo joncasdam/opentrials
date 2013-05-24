@@ -173,16 +173,16 @@ def utrn_number_validate(data):
     if data:
         if not re.match('^U\d{4}-\d{4}-\d{4}$', data):
             raise forms.ValidationError(_("Invalid format. Example: U1111-1111-1111"))
-        else:
+	#else:
             # validate UTN against ICTRP database
 
-            who_url = 'http://apps.who.int/trialsearch/utnvalid.aspx'
+        #    who_url = 'http://apps.who.int/trialsearch/utnvalid.aspx'
 
-            utn_validation_form_fields = urllib.urlencode({'TextBox1':data , '__EVENTVALIDATION':'/wEWBQKV4PvCBgLs0bLrBgKM54rGBgK7q7GGCAKL9pj0AqnSGqfaXMCcBgts7fhxyo6iDG1N','ToolkitScriptManager_HiddenField':'','__VIEWSTATE':'/wEPDwUKMTc5NjQ1Mzc3Ng8WAh4FaXBhZHIFDDE1Ny44Ni45OS41MxYCAgMPZBYCAgcPD2QPEBYBZhYBFgIeDlBhcmFtZXRlclZhbHVlBQ1VMTExMTAwMDAxMTExFgECAmRkZDmZVDmizq8DBof7aT/dfBsS1sw+','Button1':'Validate','TextBoxWatermarkExtender1_ClientState': ''})
-            r = urllib2.urlopen(who_url, utn_validation_form_fields)
+        #    utn_validation_form_fields = urllib.urlencode({'TextBox1':data , '__EVENTVALIDATION':'/wEWBQKV4PvCBgLs0bLrBgKM54rGBgK7q7GGCAKL9pj0AqnSGqfaXMCcBgts7fhxyo6iDG1N','ToolkitScriptManager_HiddenField':'','__VIEWSTATE':'/wEPDwUKMTc5NjQ1Mzc3Ng8WAh4FaXBhZHIFDDE1Ny44Ni45OS41MxYCAgMPZBYCAgcPD2QPEBYBZhYBFgIeDlBhcmFtZXRlclZhbHVlBQ1VMTExMTAwMDAxMTExFgECAmRkZDmZVDmizq8DBof7aT/dfBsS1sw+','Button1':'Validate','TextBoxWatermarkExtender1_ClientState': ''})
+        #    r = urllib2.urlopen(who_url, utn_validation_form_fields)
             
-            if 'This utn number is valid' not in r.read():
-                raise forms.ValidationError(_("Invalid UTN number. Please verify your UTN number."))
+        #    if 'This utn number is valid' not in r.read():
+        #        raise forms.ValidationError(_("Invalid UTN number. Please verify your UTN number."))
     return data
 
 ### step_1 #####################################################################

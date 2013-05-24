@@ -916,6 +916,18 @@ legend{
     padding:5px 2em 5px 1em;
 }
 
+/* test server bar  */
+#test_server_bar {
+border-radius:0 0 10px 10px;
+text-align:center;
+height:32px;
+width:100%;
+color:#fff;
+font-size:1.2em;
+background-color:#000;
+}
+
+
 /* BARRA GOVERNO FEDERAL */
 
 #govbar {
