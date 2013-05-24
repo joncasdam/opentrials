@@ -23,7 +23,7 @@
             <th>{% trans "Part" %}</th>
             <th>{% trans "Form name" %}</th>
 
-            {% for lang in submission.get_mandatory_languages %}
+            {% for lang in submission.get_fields_status %}
                 <th>{% trans "Status" %} ({% trans lang %})</th>
             {% endfor %}    
         </tr>
