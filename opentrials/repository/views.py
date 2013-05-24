@@ -618,19 +618,11 @@ def trial_view(request, trial_pk):
         ct.enrollment_end_actual is not None else ct.enrollment_end_planned
     
     if ct.language != 'pt-br':
-        try:
-            allocation_type = ct.allocation.label
-            masking_type = ct.masking.label
-            intervention_assigment = ct.intervention_assignment.label
-            purpose = ct.purpose.label
-            expanded_access_program = str(ct.expanded_access_program)
-        except:
-            allocation_type = ''
-            masking_type = ''
-            intervention_assigment = ''
-            purpose = ''
-            expanded_access_program = ''
-
+        allocation_type = ct.allocation.label
+        masking_type = ct.masking.label
+        intervention_assigment = ct.intervention_assignment.label
+        purpose = ct.purpose.label
+        expanded_access_program = str(ct.expanded_access_program)
     else:
         allocation_type = ''
         masking_type = ''
