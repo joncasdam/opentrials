@@ -132,7 +132,7 @@ class Submission(ControlledDeletion):
             TRIAL_FORMS[0]: MISSING, TRIAL_FORMS[1]: PARTIAL, TRIAL_FORMS[2]: MISSING,
 
             TRIAL_FORMS[3]: MISSING, TRIAL_FORMS[4]: MISSING, TRIAL_FORMS[5]: MISSING,
-            TRIAL_FORMS[6]: MISSING, TRIAL_FORMS[7]: MISSING, TRIAL_FORMS[8]: PARTIAL
+            TRIAL_FORMS[6]: MISSING, TRIAL_FORMS[7]: MISSING, TRIAL_FORMS[8]: MISSING
         }
         for lang in self.get_mandatory_languages():
             lang = lang.lower()
