@@ -2,3 +2,5 @@
 opentrials/settings_local.include
 *.egg-info/
 *.komodoproject
+.DS_STORE
+opentrials/logs/*
