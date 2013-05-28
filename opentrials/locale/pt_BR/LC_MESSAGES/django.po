@@ -568,14 +568,20 @@ msgstr "arquivado"
 msgid "both"
 msgstr "Ambos"
 
-#: repository/choices.py:41
-#: repository/choices.py:82
 #: repository/templates/repository/advanced_search.html:40
 msgid "male"
 msgstr "masculino"
 
 #: repository/choices.py:41
+#: repository/choices.py:82
+msgid "Male"
+msgstr "Masculino"
+
+#: repository/choices.py:41
 #: repository/choices.py:81
+msgid "Female"
+msgstr "Feminino"
+
 #: repository/templates/repository/advanced_search.html:39
 msgid "female"
 msgstr "feminino"
