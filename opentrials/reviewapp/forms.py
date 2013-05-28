@@ -136,10 +136,22 @@ class UserForm(forms.ModelForm):
 
     title = _('User Profile')
 
+
+from registration.forms import RegistrationFormUniqueEmail, RegistrationForm
+from repository import choices
+
+class UserRegForm(RegistrationFormUniqueEmail):
+    color_race = forms.ChoiceField(label=_('Color/Race'),
+                    choices=choices.COLOR_RACE,
+                    initial=choices.COLOR_RACE[0])
+    genre = forms.ChoiceField(label=_('Genre'),
+                    choices=choices.GENRE,
+                    initial=choices.GENRE[0])
+
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
-        fields = ['preferred_language']
+        fields = ['preferred_language', 'color_race', 'genre']
 
     title = _('Aditional info for profile')
 

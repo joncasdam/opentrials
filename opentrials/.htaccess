@@ -1,0 +1,6 @@
+RewriteEngine on
+RewriteCond %{http_host} !^www.ensaiosclinicos.gov.br [OR]
+RewriteCond %{http_host} ^ensaiosclinicos.gov.br [OR]
+RewriteCond %{http_host} ^ec.gov.br [OR]
+RewriteCond %{http_host} ^www.ec.gov.br [nc]
+RewriteRule ^(.*)$ http://www.ensaiosclinicos.gov.br [r=301,nc]

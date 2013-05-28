@@ -66,3 +66,18 @@ DESCRIPTOR_VOCABULARY = [
     ('ICD-10', _('ICD-10: International Classification of Diseases (10th. rev.)')),
     #('CAS', _('Chemical Abstracts Service')),
 ]
+
+COLOR_RACE = [
+    ('0',_('Do not inform')),
+    ('1',_('Asian')),
+    ('2',_('White')),
+    ('3',_('Indigene')),
+    ('4',_('Brown')),
+    ('5',_('Black')),
+]
+
+GENRE = [
+    ('-',_('Do not inform')),
+    ('F',_('Female')),
+    ('M',_('Male')),
+]

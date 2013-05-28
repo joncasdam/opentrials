@@ -20,6 +20,7 @@
 
 from django.conf.urls.defaults import *
 from registration.forms import RegistrationFormUniqueEmail
+from reviewapp.forms import UserRegForm
 
 import utilities
 
@@ -50,7 +51,7 @@ urlpatterns = patterns('',
     # setting django-registration to use unique email form
     url(r'^accounts/register/$', 'registration.views.register', 
         {'backend': 'registration.backends.default.DefaultBackend', 
-        'form_class': RegistrationFormUniqueEmail},
+        'form_class': UserRegForm},
         name='registration_register'),
 
     # django-registration views

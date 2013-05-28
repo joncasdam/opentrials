@@ -8,7 +8,7 @@ from django.contrib.contenttypes import generic
 from django.utils import simplejson
 
 from repository.models import ClinicalTrial, Institution
-from repository.choices import PROCESSING_STATUS, PUBLISHED_STATUS, ARCHIVED_STATUS
+from repository.choices import PROCESSING_STATUS, PUBLISHED_STATUS, ARCHIVED_STATUS, COLOR_RACE, GENRE
 from repository.serializers import deserialize_trial
 from tickets.models import Ticket
 from utilities import safe_truncate
@@ -51,6 +51,12 @@ class UserProfile(models.Model):
     preferred_language = models.CharField(_('Preferred language'),max_length=10,
                                 choices=settings.MANAGED_LANGUAGES_CHOICES,
                                 default=settings.MANAGED_LANGUAGES_CHOICES[-1][0])
+    color_race = models.CharField(_('Color/Race'),max_length=2,
+                                choices=COLOR_RACE,
+                                default=COLOR_RACE[0][0])
+    genre = models.CharField(_('Genre'),max_length=2,
+                                choices=GENRE,
+                                default=GENRE[0][0])
 
     def amount_submissions(self):
         return u"%03d" % (Submission.objects.filter(creator=self.user).count())
