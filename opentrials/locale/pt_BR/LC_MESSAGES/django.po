@@ -569,11 +569,13 @@ msgid "both"
 msgstr "Ambos"
 
 #: repository/choices.py:41
+#: repository/choices.py:82
 #: repository/templates/repository/advanced_search.html:40
 msgid "male"
 msgstr "masculino"
 
 #: repository/choices.py:41
+#: repository/choices.py:81
 #: repository/templates/repository/advanced_search.html:39
 msgid "female"
 msgstr "feminino"
@@ -635,6 +637,31 @@ msgstr "DeCS: Descritores em Ciências da Saúde"
 #: repository/choices.py:66
 msgid "ICD-10: International Classification of Diseases (10th. rev.)"
 msgstr "CID-10: Classificação Internacional de Doenças"
+
+#: repository/choices.py:71
+#: repository/choices.py:80
+msgid "Do not inform"
+msgstr "Não declarar"
+
+#: repository/choices.py:72
+msgid "Asian"
+msgstr "Amarela"
+
+#: repository/choices.py:73
+msgid "White"
+msgstr "Branca"
+
+#: repository/choices.py:74
+msgid "Indigene"
+msgstr "Indígena"
+
+#: repository/choices.py:75
+msgid "Brown"
+msgstr "Parda"
+
+#: repository/choices.py:76
+msgid "Black"
+msgstr "Preta"
 
 #: repository/feed.py:6 repository/feed.py:16
 #, fuzzy
@@ -2020,6 +2047,16 @@ msgstr "resubmeter"
 #: reviewapp/models.py:51
 msgid "Preferred language"
 msgstr "Idioma preferido"
+
+#: reviewapp/models.py:54
+#: reviewapp/forms.py:144
+msgid "Color/Race"
+msgstr "Cor/Raça"
+
+#: reviewapp/models.py:57
+#: reviewapp/forms.py:147
+msgid "Genre"
+msgstr "Gênero"
 
 #: reviewapp/models.py:80
 msgid "Fields Status"
