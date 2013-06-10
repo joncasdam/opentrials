@@ -1329,7 +1329,7 @@ def step_9(request, trial_pk):
                                'available_languages': [lang.lower() for lang in ct.submission.get_fields_status()],},
                                context_instance=RequestContext(request))
 
-from repository.xml.generate import xml_ictrp, xml_opentrials
+from repository.xml.generate import xml_ictrp, xml_opentrials, TrialDicList
 
 def trial_ictrp(request, trial_fossil_id, trial_version=None):
     """
@@ -1380,6 +1380,65 @@ def all_trials_ictrp(request):
     log_actions(request.user,'Exported ICTRP XML file')
 
     return resp
+
+def all_trials_xls(request):
+    all_trials = TrialDicList(ClinicalTrial.objects.all())
+    
+    today = datetime.datetime.now().strftime('%Y-%m-%dT%H_%M')
+
+    filename = "CustomCSV_OT_%s" % today
+
+    output = cStringIO.StringIO()
+
+    import xlwt
+
+    wbk = xlwt.Workbook()
+    sheet = wbk.add_sheet('Ensaios')
+    sheet_style = xlwt.XFStyle()
+    sheet_style.num_format_str = 'YYYY-MM-DD HH:MM:SS'
+
+    header_font = xlwt.Font()
+    header_font.bold = True
+
+    header_style = xlwt.XFStyle()
+    header_style.font = header_font
+
+    def escrevexls (sheet_par, linha_par, value_list, cell_style):
+        col_num = 0 
+        for value in value_list:
+            sheet_par.write(linha_par,col_num,value, cell_style)
+            col_num += 1
+
+    linha = 0
+
+    header_list = ["TIPO_DE_ESTUDO","TITULO_CIENTIFICO_PT","TITULO_CIENTIFICO_EN","TITULO_CIENTIFICO_ES","UTN","TITULO_PUBLICO_PT","TITULO_PUBLICO_EN","TITULO_PUBLICO_ES","ACRONIMO_CIENTIFICO_PT","ACRONIMO_CIENTIFICO_EN","ACRONIMO_CIENTIFICO_ES","ID_SECUNDARIOS_1","ID_SECUNDARIOS_2","ID_SECUNDARIOS_3","PATROCINADOR_PRIMARIO","PATROCINADOR_SECUNDARIO_1","PATROCINADOR_SECUNDARIO_2","APOIO_FINANCEIRO_OU_MATERIAL_1","APOIO_FINANCEIRO_OU_MATERIAL_2","CONDICOES_DE_SAUDE_PT","CONDICOES_DE_SAUDE_EN","CONDICOES_DE_SAUDE_ES","DESCRITORES_GERAIS_1_PT","DESCRITORES_GERAIS_1_EN","DESCRITORES_GERAIS_1_ES","DESCRITORES_GERAIS_2_PT","DESCRITORES_GERAIS_2_EN","DESCRITORES_GERAIS_2_ES","DESCRITORES_ESPECIFICOS_1_PT","DESCRITORES_ESPECIFICOS_1_EN","DESCRITORES_ESPECIFICOS_1_ES","DESCRITORES_ESPECIFICOS_2_PT","DESCRITORES_ESPECIFICOS_2_EN","DESCRITORES_ESPECIFICOS_2_ES","CATEGORIA_DAS_INTERVENCOES_1_PT","CATEGORIA_DAS_INTERVENCOES_1_EN","CATEGORIA_DAS_INTERVENCOES_1_ES","CATEGORIA_DAS_INTERVENCOES_2_PT","CATEGORIA_DAS_INTERVENCOES_2_EN","CATEGORIA_DAS_INTERVENCOES_2_ES","INTERVENCOES_PT","INTERVENCOES_EN","INTERVENCOES_ES","DESCRITORES_INTERVENCAO_1_PT","DESCRITORES_INTERVENCAO_1_EN","DESCRITORES_INTERVENCAO_1_ES","DESCRITORES_INTERVENCAO_2_PT","DESCRITORES_INTERVENCAO_2_EN","DESCRITORES_INTERVENCAO_2_ES","DESCRITORES_INTERVENCAO_3_PT","DESCRITORES_INTERVENCAO_3_EN","DESCRITORES_INTERVENCAO_3_ES","SITUACAO_DO_RECRUTAMENTO","PAIS_DE_RECRUTAMENTO_1","PAIS_DE_RECRUTAMENTO_2","PAIS_DE_RECRUTAMENTO_3","PAIS_DE_RECRUTAMENTO_4","DATA_PRIMEIRO_RECRUTAMENTO","DATA_ULTIMO_RECRUTAMENTO","TAMANHO_DA_AMOSTRA_ALVO","GENERO","IDADE_MIN","UNIDADE_IDADE_MIN","IDADE_MAX","UNIDADE_IDADE_MAX","CRITERIOS_DE_INCLUSAO_PT","CRITERIOS_DE_INCLUSAO_EN","CRITERIOS_DE_INCLUSAO_ES","DESENHO_DO_ESTUDO_PT","DESENHO_DO_ESTUDO_EN","DESENHO_DO_ESTUDO_ES","PROGRAMA_DE_ACESSO","ENFOQUE_DO_ESTUDO","DESENHO_DA_INTERVENCAO","BRACOS","MASCARAMENTO","ALOCACAO","FASE","DESENHO_ESTUDO_OBSERVACIONAL","TEMPORALIDADE","DESFECHO_PRIMARIO_1_PT","DESFECHO_PRIMARIO_1_EN","DESFECHO_PRIMARIO_1_ES","DESFECHO_PRIMARIO_2_PT","DESFECHO_PRIMARIO_2_EN","DESFECHO_PRIMARIO_2_ES","DESFECHO_SECUNDARIO_1_PT","DESFECHO_SECUNDARIO_1_EN","DESFECHO_SECUNDARIO_1_ES","DESFECHO_SECUNDARIO_2_PT","DESFECHO_SECUNDARIO_2_EN","DESFECHO_SECUNDARIO_2_ES","LOGIN","EMAIL","STATUS"]
+
+    escrevexls(sheet, linha, header_list, header_style)
+    
+    for trial_dic in all_trials:
+        linha += 1
+
+        insert_values = []
+        for header_elements in header_list:
+            elemento = unicode(trial_dic[header_elements])
+            insert_values.append(elemento)
+        
+        try:
+            escrevexls(sheet,linha,insert_values,sheet_style)
+        except:
+            print "---------- %s " % insert_values[30]
+
+    wbk.save(output)
+
+    response = HttpResponse(mimetype='application/zip')
+    response['Content-Disposition'] = 'attachment; filename=%s.zip' % filename
+
+    zipped_file = ZipFile(response, 'w', ZIP_DEFLATED)
+
+    csv_name = '%s.xls' % filename
+    zipped_file.writestr(csv_name, output.getvalue())
+
+    return response
 
 def trial_otxml(request, trial_id, trial_version=None):
     """
