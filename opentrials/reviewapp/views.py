@@ -347,7 +347,7 @@ def new_submission(request):
 
 @login_required
 def submission_edit_published(request, submission_pk):
-    submission = get_object_or_404(Submission, pk=submission_pk)
+    submission = get_object_or_404(Submission, trial=submission_pk)   
     submission.status = STATUS_DRAFT
     submission.save()
 
@@ -355,7 +355,7 @@ def submission_edit_published(request, submission_pk):
     trial.status = PROCESSING_STATUS
     trial.save()
 
-    return HttpResponseRedirect(reverse('repository.edittrial', args=(submission.trial.pk,)))
+    return HttpResponseRedirect(reverse('repository.edittrial', args=(submission_pk,)))
 
 @login_required
 def upload_trial(request):
