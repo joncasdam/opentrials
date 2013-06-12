@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-04-01 17:50-0300\n"
-"PO-Revision-Date: 2013-04-01 18:15\n"
+"PO-Revision-Date: 2013-06-12 16:52\n"
 "Last-Translator: Jonatas C D <jonatas.cd@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -231,10 +231,10 @@ msgid_plural ""
 "              "
 msgstr[0] ""
 "\n"
-"<p>Existe <span>%(registered)s</span> ensaio registrado.</p>"
+"<p>Existe <span>%(registered)s</span> ensaio publicado.</p>"
 msgstr[1] ""
 "\n"
-"<p>Existem <span>%(registered)s</span> ensaios registrados.</p>"
+"<p>Existem <span>%(registered)s</span> ensaios publicados.</p>"
 
 #: custom/ecgovbr/templates/base_columns.html:29
 #: templates/base_columns.html:30
@@ -243,6 +243,23 @@ msgid "No clinical trials registered."
 msgstr "Nenhum ensaio clínico foi registrado."
 
 #: custom/ecgovbr/templates/base_columns.html:33
+#, fuzzy, python-format
+msgid ""
+"\n"
+"                  <p>There is <span>%(notpublished)s</span> in analysis.</p>\n"
+"                "
+msgid_plural ""
+"\n"
+"                  <p>There are <span>%(notpublished)s</span> in analysis.</p>\n"
+"                "
+msgstr[0] ""
+"\n"
+"<p>Existe <span>%(notpublished)s</span> ensaio em análise.</p>"
+msgstr[1] ""
+"\n"
+"<p>Existem <span>%(notpublished)s</span> ensaios em análise.</p>"
+
+#: custom/ecgovbr/templates/base_columns.html:41
 #, python-format
 msgid ""
 "\n"
@@ -572,13 +589,11 @@ msgstr "Ambos"
 msgid "male"
 msgstr "masculino"
 
-#: repository/choices.py:41
-#: repository/choices.py:82
+#: repository/choices.py:41 repository/choices.py:82
 msgid "Male"
 msgstr "Masculino"
 
-#: repository/choices.py:41
-#: repository/choices.py:81
+#: repository/choices.py:41 repository/choices.py:81
 msgid "Female"
 msgstr "Feminino"
 
@@ -644,8 +659,7 @@ msgstr "DeCS: Descritores em Ciências da Saúde"
 msgid "ICD-10: International Classification of Diseases (10th. rev.)"
 msgstr "CID-10: Classificação Internacional de Doenças"
 
-#: repository/choices.py:71
-#: repository/choices.py:80
+#: repository/choices.py:71 repository/choices.py:80
 msgid "Do not inform"
 msgstr "Não declarar"
 
@@ -2054,13 +2068,11 @@ msgstr "resubmeter"
 msgid "Preferred language"
 msgstr "Idioma preferido"
 
-#: reviewapp/models.py:54
-#: reviewapp/forms.py:144
+#: reviewapp/models.py:54 reviewapp/forms.py:144
 msgid "Color/Race"
 msgstr "Cor/Raça"
 
-#: reviewapp/models.py:57
-#: reviewapp/forms.py:147
+#: reviewapp/models.py:57 reviewapp/forms.py:147
 msgid "Genre"
 msgstr "Gênero"
 
@@ -2116,7 +2128,6 @@ msgid "Continue"
 msgstr "Continuar"
 
 #: reviewapp/views.py:400
-#: repository/templates/repository/xmlpb.html:17
 msgid "XML files imported with success!"
 msgstr "Arquivo XML importado com sucesso!"
 
@@ -2459,10 +2470,10 @@ msgid_plural ""
 "                "
 msgstr[0] ""
 "\n"
-"<p>Existe <span>%(registered)s</span> ensaio registrado.</p>"
+"<p>Existe <span>%(registered)s</span> ensaio publicado.</p>"
 msgstr[1] ""
 "\n"
-"<p>Existem <span>%(registered)s</span> ensaios registrados.</p>"
+"<p>Existem <span>%(registered)s</span> ensaios publicados.</p>"
 
 #: templates/base_columns.html:34
 #, fuzzy, python-format
@@ -2483,8 +2494,10 @@ msgstr[1] ""
 
 #: templates/base_columns.html:40
 #, python-format
-msgid "There are <span>%(score.participating)s</span> participating countries.<br>"
-msgstr "<p>Existem <span>%(score.participating)s</span> países participantes.</p>"
+msgid ""
+"There are <span>%(score.participating)s</span> participating countries.<br>"
+msgstr ""
+"<p>Existem <span>%(score.participating)s</span> países participantes.</p>"
 
 #: templates/registration/registration_form.html:20
 msgid "resend the activation e-mail"
