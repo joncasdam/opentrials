@@ -155,6 +155,11 @@ class UserProfileForm(forms.ModelForm):
 
     title = _('Aditional info for profile')
 
+class XmlPlataformaBrasilForm(forms.Form):
+    xmlpb = forms.Field(widget=forms.FileInput, required=True, label='XML Plataforma Brasil')
+
+    title = _('Upload XML da Plataforma Brasil')
+
 class UploadTrialForm(forms.Form):
     submission_file = forms.Field(widget=forms.FileInput, required=True)
 

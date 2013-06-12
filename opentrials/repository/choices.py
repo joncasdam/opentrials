@@ -81,3 +81,25 @@ GENRE = [
     ('F',_('Female')),
     ('M',_('Male')),
 ]
+
+# fields to be imported from Plataforma Brasil's XML file
+XMLPB =  ["public_title",
+        "acronym",
+        "scientific_title",
+        "scientific_acronym",
+        "target_size",
+        "recruitment_status",
+        "date_enrolment",
+        "type_enrolment",
+        "study_type",
+        "study_design",
+        "hc_freetext",
+        "i_freetext",
+        "country",
+        "inclusion_criteria",
+        "agemin",
+        "agemax",
+        "gender",
+        "exclusion_criteria",
+        "prim_outcome",
+        "sec_outcome"]

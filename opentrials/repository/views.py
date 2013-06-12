@@ -28,7 +28,7 @@ from django.utils.encoding import smart_str, smart_unicode
 
 from reviewapp.models import Attachment, Submission, Remark
 from reviewapp.models import STATUS_PENDING, STATUS_RESUBMIT, STATUS_DRAFT, STATUS_APPROVED
-from reviewapp.forms import ExistingAttachmentForm,NewAttachmentForm
+from reviewapp.forms import ExistingAttachmentForm,NewAttachmentForm, XmlPlataformaBrasilForm
 from reviewapp.consts import STEP_STATES, REMARK, MISSING, PARTIAL, COMPLETE
 from reviewapp.views import submission_edit_published, send_opentrials_email
 
@@ -56,7 +56,7 @@ from polyglot.multilingual_forms import modelformset_factory
 from fossil.fields import DictKeyAttribute
 from fossil.models import Fossil
 
-from utilities import user_in_group, normalize_age, denormalize_age
+from utilities import user_in_group, normalize_age, denormalize_age, getValuesFromXml, geraDicPlataformaBrasil
 
 import datetime
 
@@ -177,21 +177,188 @@ def edit_trial_index(request, trial_pk):
     else:
         submit = request.can_change_trial
 
-    if request.method == 'POST' and submit:
-        sub = ct.submission
-        sub.status = STATUS_PENDING
-        
-        #recepient = ct.submission.creator.email
-        #subject = _('Trial Submitted')
-        #message =  MailMessage.objects.get(label='submitted').description
-        #if '%s' in message:
-        #    message = message % ct.public_title
-        #send_opentrials_email(subject, message, recepient)
+    if request.method == 'POST':
+        if submit:
+            sub = ct.submission
+            sub.status = STATUS_PENDING
+            
+            #recepient = ct.submission.creator.email
+            #subject = _('Trial Submitted')
+            #message =  MailMessage.objects.get(label='submitted').description
+            #if '%s' in message:
+            #    message = message % ct.public_title
+            #send_opentrials_email(subject, message, recepient)
 
-        sub.save()
-        return HttpResponseRedirect(reverse('reviewapp.dashboard'))
+            sub.save()
+            return HttpResponseRedirect(reverse('reviewapp.dashboard'))
+
+        if 'xmlpb' in request.FILES:
+            xml_file = request.FILES['xmlpb']
+
+            form = XmlPlataformaBrasilForm(request.POST, files=request.FILES)
+            if form.is_valid():
+                from django.core.files.storage import default_storage
+                from django.core.files.base import ContentFile
+                import os
+                import ast
+                import re
+
+                destino = settings.ATTACHMENTS_PATH + '/' + xml_file.name
+
+                path = default_storage.save(destino, ContentFile(xml_file.read()))
+                tmp_file = os.path.join(settings.ATTACHMENTS_PATH, xml_file.name)
+                
+                dicXML = geraDicPlataformaBrasil(path, choices.XMLPB)
+
+                entry_status = Submission.objects.get(trial=ct.id)
+                dic_status = ast.literal_eval(entry_status.fields_status)
+
+                Recruitment_status = None
+                TrialIdentification_status = None
+                StudyType_status = None
+                Interventions_status = None
+                HealthConditions_status = None
+
+                imported_list = []
+
+                entry = ClinicalTrial.objects.get(pk=ct.pk)
+
+                if 'target_size' in dicXML and dicXML['target_size'] != '':
+                    try:
+                        entry.target_sample_size = dicXML['target_size']
+                        entry.save()
+                        Recruitment_status = True
+                        mported_list.append('Target Sample Size')
+                    except:
+                        print 'Error: target_size'
+                
+                if 'agemin' in dicXML and dicXML['agemin'] != '':
+                    try: 
+                        agemin = re.findall(r"\d+", dicXML['agemin'])[0]
+                        entry.agemin_value = agemin
+                        entry.save()
+                        Recruitment_status = True
+                        imported_list.append('Inclusion Minimum Age')
+                    except:
+                        print 'Error: agemin'
+
+                if 'agemax' in dicXML and dicXML['agemax'] != '':
+                    try:
+                        agemax = re.findall(r"\d+", dicXML['agemax'])[0]
+                        entry.agemax_value = agemax
+                        entry.save()
+                        Recruitment_status = True
+                        imported_list.append('Inclusion Maximum Age')
+                    except:
+                        print 'Error: agemax'
+
+                entry_translations = ClinicalTrialTranslation.objects.get(object_id=ct.pk,language__exact='pt-br')
+
+                if 'public_title' in dicXML and dicXML['public_title'] != '':
+                    try:
+                        entry_translations.public_title = dicXML['public_title']
+                        entry_translations.save()
+                        TrialIdentification_status = True
+                        imported_list.append('Public Title')
+                    except:
+                        print 'Error: public_title'
+
+                if 'acronym' in dicXML and dicXML['acronym'] != '':
+                    try:
+                        entry_translations.acronym = dicXML['acronym']
+                        entry_translations.save()
+                        TrialIdentification_status = True
+                        imported_list.append('Acronym')
+                    except:
+                        print 'Error: acronym'
+
+                if 'scientific_title' in dicXML and dicXML['scientific_title'] != '':
+                    try:
+                        entry_translations.scientific_title = dicXML['scientific_title']
+                        entry_translations.save()
+                        TrialIdentification_status = True
+                        imported_list.append('Scientific Title')
+                    except:
+                        print 'Error: scientific_title'
+
+                if 'study_design' in dicXML and dicXML['study_design'] != '':
+                    try:
+                        entry_translations.study_design = dicXML['study_design']
+                        entry_translations.save()
+                        StudyType_status = True
+                        imported_list.append('Study Design')
+                    except:
+                        print 'Error: study_design'
+
+                if 'scientific_acronym' in dicXML and dicXML['scientific_acronym'] != '':
+                    try:
+                        entry_translations.scientific_acronym = dicXML['scientific_acronym']
+                        entry_translations.save()
+                        TrialIdentification_status = True
+                        imported_list.append('Scientific Acronym')
+                    except:
+                        print 'Error: scientific_acronym'
+
+                if 'inclusion_criteria' in dicXML and dicXML['inclusion_criteria'] != '':
+                    try:
+                        entry_translations.inclusion_criteria = dicXML['inclusion_criteria']
+                        entry_translations.save()
+                        Recruitment_status = True
+                        imported_list.append('Inclusion Criteria')
+                    except:
+                        print 'Error: inclusion_criteria'
+
+                if 'hc_freetext' in dicXML and dicXML['hc_freetext'] != '':
+                    try:
+                        entry_translations.hc_freetext = dicXML['hc_freetext']
+                        entry_translations.save()
+                        HealthConditions_status = True
+                        imported_list.append('Health Condition(s)')
+                    except:
+                        print 'Error: hc_freetext'
+
+                if 'i_freetext' in dicXML and dicXML['i_freetext'] != '':
+                    try:
+                        entry_translations.hc_freetext = dicXML['i_freetext']
+                        entry_translations.save()
+                        Interventions_status = True
+                        imported_list.append('Intervention(s)')
+                    except:
+                        print 'Erro: i_freetext'
+
+                if 'exclusion_criteria' in dicXML and dicXML['exclusion_criteria'] != '':
+                    try:
+                        entry_translations.exclusion_criteria = dicXML['exclusion_criteria']
+                        entry_translations.save()
+                        Recruitment_status = True
+                        imported_list.append('Exclusion Criteria')
+                    except:
+                        print 'Erro: exclusion_criteria'
+
+                # update Trial status
+                from django.utils import simplejson
+                if Recruitment_status: dic_status['pt-br']['Recruitment'] = 3
+
+                if TrialIdentification_status: dic_status['pt-br']['Trial Identification'] = 3
+                
+                if StudyType_status: dic_status['pt-br']['Study Type'] = 3
+                
+                if Interventions_status: dic_status['pt-br']['Interventions'] = 3
+                
+                if HealthConditions_status: dic_status['pt-br']['Health Conditions'] = 3
+
+                entry_status.fields_status = unicode(simplejson.dumps(dic_status))
+                entry_status.save()
+
+                # return HttpResponseRedirect(reverse('reviewapp.dashboard'))
+
+                return render_to_response('repository/xmlpb.html',
+                                  {'trial_pk':ct.id,
+                                    'imported_fields':imported_list,},
+                                   context_instance=RequestContext(request))
     else:
         ''' start view '''
+        form = XmlPlataformaBrasilForm()
 
         # Changes status from "resubmit" to "draft" if user is the creator
         sub = ct.submission
@@ -253,11 +420,13 @@ def edit_trial_index(request, trial_pk):
             status_message['icon'] = settings.MEDIA_URL + 'media/img/admin/icon_error.gif'
             status_message['msg'] = _("Error")
 
+
         return render_to_response('repository/trial_index.html',
                                   {'trial_pk':trial_pk,
                                    'submission':ct.submission,
                                    'links':links,
                                    'status': status,
+                                   'form_xmlpb': form,
                                    'submit': submit,
                                    'status_message': status_message,},
                                    context_instance=RequestContext(request))

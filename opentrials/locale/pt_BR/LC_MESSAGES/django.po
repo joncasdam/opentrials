@@ -2116,6 +2116,7 @@ msgid "Continue"
 msgstr "Continuar"
 
 #: reviewapp/views.py:400
+#: repository/templates/repository/xmlpb.html:17
 msgid "XML files imported with success!"
 msgstr "Arquivo XML importado com sucesso!"
 

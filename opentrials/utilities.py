@@ -100,6 +100,38 @@ def denormalize_age(hours, unit):
                                }
     return hours / hour_to_age_multipliers[unit]
 
+from xml.dom.minidom import parseString
+
+def getValuesFromXml(xmlSource, tag):
+    file = open(xmlSource,'r')
+    #convert to string:
+    data = file.read()
+    
+    #close file because we dont need it anymore:
+    file.close()
+    
+    #parse the xml you got from the file
+    dom = parseString(data)
+    
+    #retrieve the first xml tag (<tag>data</tag>) that the parser finds with name tagName:
+    xmlTag = dom.getElementsByTagName(tag)[0].toxml()
+    
+    #strip off the tag (<tag>data</tag>  --->   data) and (<tag/>) for empty tags:
+    xmlData=xmlTag.replace('<%s>' % tag,'').replace('</%s>' % tag,'').replace('<%s/>' % tag,'')
+
+    #just print the data
+    return {'%s' % tag: xmlData.decode('utf-8')}
+
+def geraDicPlataformaBrasil(filesource, lista_de_tags):
+    dic = {}
+    for tag in lista_de_tags:
+            try:
+                dic[tag] = getValuesFromXml(filesource, tag)[tag]
+            except:
+                print "erro"
+
+    return dic
+
 if __name__=='__main__':
     import doctest
     doctest.testmod()
