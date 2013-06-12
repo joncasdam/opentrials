@@ -22,10 +22,12 @@ class GetScoresNode(Node):
 
         number_recruiting_trials = len(ClinicalTrial.fossils.recruiting())
         number_registered_trials = len(ClinicalTrial.fossils.published())
+        not_published_trials = len(ClinicalTrial.notpublished.all())
         scoreboard_text = "Deprecated!"
 
         scoreboard_result = {'number_recruiting_trials': number_recruiting_trials,
-                             'number_registered_trials': number_registered_trials}
+                             'number_registered_trials': number_registered_trials,
+                             'not_published_trials': not_published_trials}
 
         context[self.varname] = scoreboard_result #scoreboard_text
         return ''
