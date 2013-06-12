@@ -4,3 +4,4 @@ opentrials/settings_local.include
 *.komodoproject
 .DS_STORE
 opentrials/logs/*
+opentrials/custom/ecgovbr/static/attachments/*
