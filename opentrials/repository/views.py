@@ -202,11 +202,15 @@ def edit_trial_index(request, trial_pk):
                 import os
                 import ast
                 import re
+                from django.template.defaultfilters import slugify
 
-                destino = settings.ATTACHMENTS_PATH + '/' + xml_file.name
+                xml_file_name = xml_file.name
+                fname, dot, extension = xml_file_name.rpartition('.')
+                fname = slugify(fname)
+                
+                destino = settings.ATTACHMENTS_PATH + '/' + '%s.%s' % (fname, extension)
 
                 path = default_storage.save(destino, ContentFile(xml_file.read()))
-                tmp_file = os.path.join(settings.ATTACHMENTS_PATH, xml_file.name)
                 
                 dicXML = geraDicPlataformaBrasil(path, choices.XMLPB)
 
@@ -228,7 +232,7 @@ def edit_trial_index(request, trial_pk):
                         entry.target_sample_size = dicXML['target_size']
                         entry.save()
                         Recruitment_status = True
-                        mported_list.append('Target Sample Size')
+                        imported_list.append('Target Sample Size')
                     except:
                         print 'Error: target_size'
                 
@@ -319,7 +323,7 @@ def edit_trial_index(request, trial_pk):
 
                 if 'i_freetext' in dicXML and dicXML['i_freetext'] != '':
                     try:
-                        entry_translations.hc_freetext = dicXML['i_freetext']
+                        entry_translations.i_freetext = dicXML['i_freetext']
                         entry_translations.save()
                         Interventions_status = True
                         imported_list.append('Intervention(s)')
