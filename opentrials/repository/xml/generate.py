@@ -685,7 +685,7 @@ def TrialDicList(trials):
             try:
                 trial_dic['STATUS'] = ct.submission.status
             except:
-                trial_dic['STATUS'] = ct.status
+                trial_dic['STATUS'] = except_msg
         else:
             trial_dic['STATUS'] = ct.status
 
