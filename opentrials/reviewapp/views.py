@@ -307,6 +307,7 @@ def new_submission(request):
             su.language = initial_form.cleaned_data['language']
             su.title = initial_form.cleaned_data['scientific_title']
             su.primary_sponsor = initial_form.cleaned_data['primary_sponsor']
+            su.status = STATUS_DRAFT
 
             trial.utrn_number = initial_form.cleaned_data['utrn_number']
             trial.language = settings.DEFAULT_SUBMISSION_LANGUAGE
