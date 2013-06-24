@@ -4,7 +4,7 @@ from django.views.generic.list_detail import object_detail, object_list
 from repository.models import ClinicalTrial
 
 from repository.views import edit_trial_index, full_view, index, step_1, step_2, step_3
-from repository.views import step_4, step_5, step_6, step_7, step_8, step_9, new_institution
+from repository.views import step_4, step_5, step_6, step_7, step_8, step_9, new_institution, all_trials_xls
 from repository.views import trial_registered, trial_view, recruiting, trial_ictrp, trial_otxml
 from repository.views import all_trials_ictrp, contacts, advanced_search, multi_otxml, custom_otcsv
 
@@ -35,6 +35,7 @@ urlpatterns = patterns('',
     url(r'^all/xml/ictrp$', all_trials_ictrp),
     url(r'^multi/xml/ot', multi_otxml, name='repository.multi_otxml'),
     url(r'^multi/csv/ot', custom_otcsv, name='repository.custom_otcsv'),
+    url(r'^all/xls$', all_trials_xls),
     url(r'^(?P<trial_fossil_id>[0-9A-Za-z-]+)/([\w|\W]+)?$', trial_registered, name='repository.trial_registered'),
     url(r'^$', index, name='repository.index'),
 )

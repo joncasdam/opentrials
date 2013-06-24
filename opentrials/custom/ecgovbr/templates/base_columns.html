@@ -29,6 +29,14 @@
               {% trans "No clinical trials registered." %}
             {%endif%}
 
+            {% if score.not_published_trials %}
+              {% blocktrans count score.not_published_trials as notpublished %}
+                <p>There is <span>{{ notpublished }}</span> in analysis.</p>
+              {% plural %}
+                <p>There are <span>{{ notpublished }}</span> in analysis.</p>
+              {% endblocktrans %}
+            {%endif%}
+
             {% if score.number_recruiting_trials %}
               {% blocktrans count score.number_recruiting_trials as recruiting %}
                 <p>There is <span>{{ recruiting }}</span> recruiting trial.</p>

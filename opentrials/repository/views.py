@@ -28,7 +28,7 @@ from django.utils.encoding import smart_str, smart_unicode
 
 from reviewapp.models import Attachment, Submission, Remark
 from reviewapp.models import STATUS_PENDING, STATUS_RESUBMIT, STATUS_DRAFT, STATUS_APPROVED
-from reviewapp.forms import ExistingAttachmentForm,NewAttachmentForm
+from reviewapp.forms import ExistingAttachmentForm,NewAttachmentForm, XmlPlataformaBrasilForm
 from reviewapp.consts import STEP_STATES, REMARK, MISSING, PARTIAL, COMPLETE
 from reviewapp.views import submission_edit_published, send_opentrials_email
 
@@ -56,7 +56,7 @@ from polyglot.multilingual_forms import modelformset_factory
 from fossil.fields import DictKeyAttribute
 from fossil.models import Fossil
 
-from utilities import user_in_group, normalize_age, denormalize_age
+from utilities import user_in_group, normalize_age, denormalize_age, getValuesFromXml, geraDicPlataformaBrasil
 
 import datetime
 
@@ -177,21 +177,192 @@ def edit_trial_index(request, trial_pk):
     else:
         submit = request.can_change_trial
 
-    if request.method == 'POST' and submit:
-        sub = ct.submission
-        sub.status = STATUS_PENDING
-        
-        #recepient = ct.submission.creator.email
-        #subject = _('Trial Submitted')
-        #message =  MailMessage.objects.get(label='submitted').description
-        #if '%s' in message:
-        #    message = message % ct.public_title
-        #send_opentrials_email(subject, message, recepient)
+    if request.method == 'POST':
+        if submit:
+            sub = ct.submission
+            sub.status = STATUS_PENDING
+            
+            #recepient = ct.submission.creator.email
+            #subject = _('Trial Submitted')
+            #message =  MailMessage.objects.get(label='submitted').description
+            #if '%s' in message:
+            #    message = message % ct.public_title
+            #send_opentrials_email(subject, message, recepient)
 
-        sub.save()
-        return HttpResponseRedirect(reverse('reviewapp.dashboard'))
+            sub.save()
+            return HttpResponseRedirect(reverse('reviewapp.dashboard'))
+
+        if 'xmlpb' in request.FILES:
+            xml_file = request.FILES['xmlpb']
+
+            form = XmlPlataformaBrasilForm(request.POST, files=request.FILES)
+            if form.is_valid():
+                from django.core.files.storage import default_storage
+                from django.core.files.base import ContentFile
+                import os
+                import ast
+                import re
+                from django.template.defaultfilters import slugify
+
+                xml_file_name = xml_file.name
+                fname, dot, extension = xml_file_name.rpartition('.')
+                fname = slugify(fname)
+                
+                destino = settings.ATTACHMENTS_PATH + '/' + '%s.%s' % (fname, extension)
+
+                path = default_storage.save(destino, ContentFile(xml_file.read()))
+                
+                dicXML = geraDicPlataformaBrasil(path, choices.XMLPB)
+
+                entry_status = Submission.objects.get(trial=ct.id)
+                dic_status = ast.literal_eval(entry_status.fields_status)
+
+                Recruitment_status = None
+                TrialIdentification_status = None
+                StudyType_status = None
+                Interventions_status = None
+                HealthConditions_status = None
+
+                imported_list = []
+
+                entry = ClinicalTrial.objects.get(pk=ct.pk)
+
+                if 'target_size' in dicXML and dicXML['target_size'] != '':
+                    try:
+                        entry.target_sample_size = dicXML['target_size']
+                        entry.save()
+                        Recruitment_status = True
+                        imported_list.append('Target Sample Size')
+                    except:
+                        print 'Error: target_size'
+                
+                if 'agemin' in dicXML and dicXML['agemin'] != '':
+                    try: 
+                        agemin = re.findall(r"\d+", dicXML['agemin'])[0]
+                        entry.agemin_value = agemin
+                        entry.save()
+                        Recruitment_status = True
+                        imported_list.append('Inclusion Minimum Age')
+                    except:
+                        print 'Error: agemin'
+
+                if 'agemax' in dicXML and dicXML['agemax'] != '':
+                    try:
+                        agemax = re.findall(r"\d+", dicXML['agemax'])[0]
+                        entry.agemax_value = agemax
+                        entry.save()
+                        Recruitment_status = True
+                        imported_list.append('Inclusion Maximum Age')
+                    except:
+                        print 'Error: agemax'
+
+                entry_translations = ClinicalTrialTranslation.objects.get(object_id=ct.pk,language__exact='pt-br')
+
+                if 'public_title' in dicXML and dicXML['public_title'] != '':
+                    try:
+                        entry_translations.public_title = dicXML['public_title']
+                        entry_translations.save()
+                        TrialIdentification_status = True
+                        imported_list.append('Public Title')
+                    except:
+                        print 'Error: public_title'
+
+                if 'acronym' in dicXML and dicXML['acronym'] != '':
+                    try:
+                        entry_translations.acronym = dicXML['acronym']
+                        entry_translations.save()
+                        TrialIdentification_status = True
+                        imported_list.append('Acronym')
+                    except:
+                        print 'Error: acronym'
+
+                if 'scientific_title' in dicXML and dicXML['scientific_title'] != '':
+                    try:
+                        entry_translations.scientific_title = dicXML['scientific_title']
+                        entry_translations.save()
+                        TrialIdentification_status = True
+                        imported_list.append('Scientific Title')
+                    except:
+                        print 'Error: scientific_title'
+
+                if 'study_design' in dicXML and dicXML['study_design'] != '':
+                    try:
+                        entry_translations.study_design = dicXML['study_design']
+                        entry_translations.save()
+                        StudyType_status = True
+                        imported_list.append('Study Design')
+                    except:
+                        print 'Error: study_design'
+
+                if 'scientific_acronym' in dicXML and dicXML['scientific_acronym'] != '':
+                    try:
+                        entry_translations.scientific_acronym = dicXML['scientific_acronym']
+                        entry_translations.save()
+                        TrialIdentification_status = True
+                        imported_list.append('Scientific Acronym')
+                    except:
+                        print 'Error: scientific_acronym'
+
+                if 'inclusion_criteria' in dicXML and dicXML['inclusion_criteria'] != '':
+                    try:
+                        entry_translations.inclusion_criteria = dicXML['inclusion_criteria']
+                        entry_translations.save()
+                        Recruitment_status = True
+                        imported_list.append('Inclusion Criteria')
+                    except:
+                        print 'Error: inclusion_criteria'
+
+                if 'hc_freetext' in dicXML and dicXML['hc_freetext'] != '':
+                    try:
+                        entry_translations.hc_freetext = dicXML['hc_freetext']
+                        entry_translations.save()
+                        HealthConditions_status = True
+                        imported_list.append('Health Condition(s)')
+                    except:
+                        print 'Error: hc_freetext'
+
+                if 'i_freetext' in dicXML and dicXML['i_freetext'] != '':
+                    try:
+                        entry_translations.i_freetext = dicXML['i_freetext']
+                        entry_translations.save()
+                        Interventions_status = True
+                        imported_list.append('Intervention(s)')
+                    except:
+                        print 'Erro: i_freetext'
+
+                if 'exclusion_criteria' in dicXML and dicXML['exclusion_criteria'] != '':
+                    try:
+                        entry_translations.exclusion_criteria = dicXML['exclusion_criteria']
+                        entry_translations.save()
+                        Recruitment_status = True
+                        imported_list.append('Exclusion Criteria')
+                    except:
+                        print 'Erro: exclusion_criteria'
+
+                # update Trial status
+                from django.utils import simplejson
+                if Recruitment_status: dic_status['pt-br']['Recruitment'] = 3
+
+                if TrialIdentification_status: dic_status['pt-br']['Trial Identification'] = 3
+                
+                if StudyType_status: dic_status['pt-br']['Study Type'] = 3
+                
+                if Interventions_status: dic_status['pt-br']['Interventions'] = 3
+                
+                if HealthConditions_status: dic_status['pt-br']['Health Conditions'] = 3
+
+                entry_status.fields_status = unicode(simplejson.dumps(dic_status))
+                entry_status.save()
+
+                # return HttpResponseRedirect(reverse('reviewapp.dashboard'))
+
+                return render_to_response('repository/xmlpb.html',
+                                  {'trial_pk':ct.id,
+                                    'imported_fields':imported_list,},
+                                   context_instance=RequestContext(request))
     else:
         ''' start view '''
+        form = XmlPlataformaBrasilForm()
 
         # Changes status from "resubmit" to "draft" if user is the creator
         sub = ct.submission
@@ -253,11 +424,13 @@ def edit_trial_index(request, trial_pk):
             status_message['icon'] = settings.MEDIA_URL + 'media/img/admin/icon_error.gif'
             status_message['msg'] = _("Error")
 
+
         return render_to_response('repository/trial_index.html',
                                   {'trial_pk':trial_pk,
                                    'submission':ct.submission,
                                    'links':links,
                                    'status': status,
+                                   'form_xmlpb': form,
                                    'submit': submit,
                                    'status_message': status_message,},
                                    context_instance=RequestContext(request))
@@ -1329,7 +1502,7 @@ def step_9(request, trial_pk):
                                'available_languages': [lang.lower() for lang in ct.submission.get_fields_status()],},
                                context_instance=RequestContext(request))
 
-from repository.xml.generate import xml_ictrp, xml_opentrials
+from repository.xml.generate import xml_ictrp, xml_opentrials, TrialDicList
 
 def trial_ictrp(request, trial_fossil_id, trial_version=None):
     """
@@ -1380,6 +1553,65 @@ def all_trials_ictrp(request):
     log_actions(request.user,'Exported ICTRP XML file')
 
     return resp
+
+def all_trials_xls(request):
+    all_trials = TrialDicList(ClinicalTrial.objects.all())
+    
+    today = datetime.datetime.now().strftime('%Y-%m-%dT%H_%M')
+
+    filename = "CustomCSV_OT_%s" % today
+
+    output = cStringIO.StringIO()
+
+    import xlwt
+
+    wbk = xlwt.Workbook()
+    sheet = wbk.add_sheet('Ensaios')
+    sheet_style = xlwt.XFStyle()
+    sheet_style.num_format_str = 'YYYY-MM-DD HH:MM:SS'
+
+    header_font = xlwt.Font()
+    header_font.bold = True
+
+    header_style = xlwt.XFStyle()
+    header_style.font = header_font
+
+    def escrevexls (sheet_par, linha_par, value_list, cell_style):
+        col_num = 0 
+        for value in value_list:
+            sheet_par.write(linha_par,col_num,value, cell_style)
+            col_num += 1
+
+    linha = 0
+
+    header_list = ["TIPO_DE_ESTUDO","TITULO_CIENTIFICO_PT","TITULO_CIENTIFICO_EN","TITULO_CIENTIFICO_ES","UTN","TITULO_PUBLICO_PT","TITULO_PUBLICO_EN","TITULO_PUBLICO_ES","ACRONIMO_CIENTIFICO_PT","ACRONIMO_CIENTIFICO_EN","ACRONIMO_CIENTIFICO_ES","ID_SECUNDARIOS_1","ID_SECUNDARIOS_2","ID_SECUNDARIOS_3","PATROCINADOR_PRIMARIO","PATROCINADOR_SECUNDARIO_1","PATROCINADOR_SECUNDARIO_2","APOIO_FINANCEIRO_OU_MATERIAL_1","APOIO_FINANCEIRO_OU_MATERIAL_2","CONDICOES_DE_SAUDE_PT","CONDICOES_DE_SAUDE_EN","CONDICOES_DE_SAUDE_ES","DESCRITORES_GERAIS_1_PT","DESCRITORES_GERAIS_1_EN","DESCRITORES_GERAIS_1_ES","DESCRITORES_GERAIS_2_PT","DESCRITORES_GERAIS_2_EN","DESCRITORES_GERAIS_2_ES","DESCRITORES_ESPECIFICOS_1_PT","DESCRITORES_ESPECIFICOS_1_EN","DESCRITORES_ESPECIFICOS_1_ES","DESCRITORES_ESPECIFICOS_2_PT","DESCRITORES_ESPECIFICOS_2_EN","DESCRITORES_ESPECIFICOS_2_ES","CATEGORIA_DAS_INTERVENCOES_1_PT","CATEGORIA_DAS_INTERVENCOES_1_EN","CATEGORIA_DAS_INTERVENCOES_1_ES","CATEGORIA_DAS_INTERVENCOES_2_PT","CATEGORIA_DAS_INTERVENCOES_2_EN","CATEGORIA_DAS_INTERVENCOES_2_ES","INTERVENCOES_PT","INTERVENCOES_EN","INTERVENCOES_ES","DESCRITORES_INTERVENCAO_1_PT","DESCRITORES_INTERVENCAO_1_EN","DESCRITORES_INTERVENCAO_1_ES","DESCRITORES_INTERVENCAO_2_PT","DESCRITORES_INTERVENCAO_2_EN","DESCRITORES_INTERVENCAO_2_ES","DESCRITORES_INTERVENCAO_3_PT","DESCRITORES_INTERVENCAO_3_EN","DESCRITORES_INTERVENCAO_3_ES","SITUACAO_DO_RECRUTAMENTO","PAIS_DE_RECRUTAMENTO_1","PAIS_DE_RECRUTAMENTO_2","PAIS_DE_RECRUTAMENTO_3","PAIS_DE_RECRUTAMENTO_4","DATA_PRIMEIRO_RECRUTAMENTO","DATA_ULTIMO_RECRUTAMENTO","TAMANHO_DA_AMOSTRA_ALVO","GENERO","IDADE_MIN","UNIDADE_IDADE_MIN","IDADE_MAX","UNIDADE_IDADE_MAX","CRITERIOS_DE_INCLUSAO_PT","CRITERIOS_DE_INCLUSAO_EN","CRITERIOS_DE_INCLUSAO_ES","DESENHO_DO_ESTUDO_PT","DESENHO_DO_ESTUDO_EN","DESENHO_DO_ESTUDO_ES","PROGRAMA_DE_ACESSO","ENFOQUE_DO_ESTUDO","DESENHO_DA_INTERVENCAO","BRACOS","MASCARAMENTO","ALOCACAO","FASE","DESENHO_ESTUDO_OBSERVACIONAL","TEMPORALIDADE","DESFECHO_PRIMARIO_1_PT","DESFECHO_PRIMARIO_1_EN","DESFECHO_PRIMARIO_1_ES","DESFECHO_PRIMARIO_2_PT","DESFECHO_PRIMARIO_2_EN","DESFECHO_PRIMARIO_2_ES","DESFECHO_SECUNDARIO_1_PT","DESFECHO_SECUNDARIO_1_EN","DESFECHO_SECUNDARIO_1_ES","DESFECHO_SECUNDARIO_2_PT","DESFECHO_SECUNDARIO_2_EN","DESFECHO_SECUNDARIO_2_ES","LOGIN","EMAIL","STATUS"]
+
+    escrevexls(sheet, linha, header_list, header_style)
+    
+    for trial_dic in all_trials:
+        linha += 1
+
+        insert_values = []
+        for header_elements in header_list:
+            elemento = unicode(trial_dic[header_elements])
+            insert_values.append(elemento)
+        
+        try:
+            escrevexls(sheet,linha,insert_values,sheet_style)
+        except:
+            print "---------- %s " % insert_values[30]
+
+    wbk.save(output)
+
+    response = HttpResponse(mimetype='application/zip')
+    response['Content-Disposition'] = 'attachment; filename=%s.zip' % filename
+
+    zipped_file = ZipFile(response, 'w', ZIP_DEFLATED)
+
+    csv_name = '%s.xls' % filename
+    zipped_file.writestr(csv_name, output.getvalue())
+
+    return response
 
 def trial_otxml(request, trial_id, trial_version=None):
     """

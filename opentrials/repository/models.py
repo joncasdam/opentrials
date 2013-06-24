@@ -113,6 +113,10 @@ class TrialsPublished(NotDeletedManager):
     def get_query_set(self):
         return super(TrialsPublished, self).get_query_set().filter(status__exact='published')
 
+class TrialsNotPublished(NotDeletedManager):
+    def get_query_set(self):
+        return super(TrialsNotPublished, self).get_query_set().filter(status__exact='processing')
+
 class ClinicalTrialManager(NotDeletedManager):
     def deserialize_for_fossil(self, data, persistent=False):
         return deserialize_trial(data, persistent)
@@ -231,6 +235,7 @@ class PublishedTrial(Fossil):
 class ClinicalTrial(TrialRegistrationDataSetModel):
     objects = ClinicalTrialManager()
     published = TrialsPublished()
+    notpublished = TrialsNotPublished()
     fossils = TrialsFossilManager()
 
     # TRDS 1
